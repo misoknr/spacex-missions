@@ -1,18 +1,22 @@
 import React from 'react';
+import { Route, Routes } from "react-router-dom";
 import { Provider } from "urql";
 
 import { spacexClient } from './spacex/api-client'
-import MissionTable from './spacex/MissionTable';
+import MissionDetail from "./spacex/MissionDetail";
+import MissionList from "./spacex/MissionList";
 import './App.css';
 
 function App() {
     return (
-        <Provider value={spacexClient}>
-            <div className="App">
-                <h1>SpaceX Mission List</h1>
-                <MissionTable/>
-            </div>
-        </Provider>
+        <div className="App">
+            <Provider value={spacexClient}>
+                <Routes>
+                    <Route path="/" element={<MissionList/>}/>
+                    <Route path="/launch/:id" element={<MissionDetail/>}/>
+                </Routes>
+            </Provider>
+        </div>
     );
 }
 

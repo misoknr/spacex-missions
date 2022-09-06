@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import { Link } from 'react-router-dom';
 import { useQuery } from 'urql';
 
 import { Mission } from "./types/MissionTable";
 import { MissionsQuery } from "./api-client";
-
-const TableControls = () => {
-
-};
 
 const MissionTable = () => {
 
@@ -31,14 +29,21 @@ const MissionTable = () => {
         show: true,
     });
 
-    const [columnStatus, setColumnStatus] = useState({
-        id: 'status',
-        name: 'Mission status',
+    const [columnLaunchSuccess, setColumnLaunchSuccess] = useState({
+        id: 'launch_success',
+        name: 'Launch success',
         show: true,
     });
 
+    const [columnLandSuccess, setColumnLandSuccess] = useState({
+        id: 'land_success',
+        name: 'Land success',
+        show: true,
+    });
+
+    // Fetching data
     const [result, reexecuteQuery] = useQuery({
-        query: MissionsQuery,
+        query: MissionsQuery(20),
     });
 
     const {data, fetching, error} = result;
@@ -62,7 +67,7 @@ const MissionTable = () => {
                         type="checkbox"
                         id={columnMission.id}
                         checked={columnMission.show}
-                        onClick={() => {
+                        onChange={() => {
                             setColumnMission({
                                 ...columnMission, show: !columnMission.show
                             });
@@ -75,7 +80,7 @@ const MissionTable = () => {
                         type="checkbox"
                         id={columnRocket.id}
                         checked={columnRocket.show}
-                        onClick={() => {
+                        onChange={() => {
                             setColumnRocket({
                                 ...columnRocket, show: !columnRocket.show
                             });
@@ -88,7 +93,7 @@ const MissionTable = () => {
                         type="checkbox"
                         id={columnDate.id}
                         checked={columnDate.show}
-                        onClick={() => {
+                        onChange={() => {
                             setColumnDate({
                                 ...columnDate, show: !columnDate.show
                             });
@@ -96,37 +101,58 @@ const MissionTable = () => {
                     />
                     <Form.Check
                         inline
-                        label={columnStatus.name}
-                        name={columnStatus.id}
+                        label={columnLaunchSuccess.name}
+                        name={columnLaunchSuccess.id}
                         type="checkbox"
-                        id={columnStatus.id}
-                        checked={columnStatus.show}
-                        onClick={() => {
-                            setColumnStatus({
-                                ...columnStatus, show: !columnStatus.show
+                        id={columnLaunchSuccess.id}
+                        checked={columnLaunchSuccess.show}
+                        onChange={() => {
+                            setColumnLaunchSuccess({
+                                ...columnLaunchSuccess, show: !columnLaunchSuccess.show
+                            });
+                        }}
+                    />
+                    <Form.Check
+                        inline
+                        label={columnLandSuccess.name}
+                        name={columnLandSuccess.id}
+                        type="checkbox"
+                        id={columnLandSuccess.id}
+                        checked={columnLandSuccess.show}
+                        onChange={() => {
+                            setColumnLandSuccess({
+                                ...columnLandSuccess, show: !columnLandSuccess.show
                             });
                         }}
                     />
                 </div>
             </Form>
 
-            <Table striped bordered>
+            <Table striped variant="dark">
                 <thead>
                 <tr>
                     {columnMission.show && <th>{columnMission.name}</th>}
                     {columnRocket.show && <th>{columnRocket.name}</th>}
                     {columnDate.show && <th>{columnDate.name}</th>}
-                    {columnStatus.show && <th>{columnStatus.name}</th>}
+                    {columnLaunchSuccess.show && <th>{columnLaunchSuccess.name}</th>}
+                    {columnLandSuccess.show && <th>{columnLandSuccess.name}</th>}
+                    <th/>
                 </tr>
                 </thead>
 
                 <tbody>
                 {data.launchesPast.map((pastLaunch: Mission) => (
-                    <tr>
+                    <tr key={pastLaunch.id}>
                         {columnMission.show && <td>{pastLaunch.mission_name}</td>}
                         {columnRocket.show && <td>{pastLaunch.rocket.rocket_name}</td>}
                         {columnDate.show && <td>{pastLaunch.launch_date_local}</td>}
-                        {columnStatus.show && <td>{pastLaunch.launch_success ? 'Success' : 'Failure'}</td>}
+                        {columnLaunchSuccess.show && <td>{pastLaunch.launch_success ? 'Success' : 'Failure'}</td>}
+                        {columnLandSuccess.show && <td>{pastLaunch.rocket.first_stage.cores[0].land_success ? 'Success' : 'Failure'}</td>}
+                        <td>
+                            <Link to={`launch/${pastLaunch.id}`}>
+                                <Button variant="outline-info">Detail</Button>
+                            </Link>
+                        </td>
                     </tr>
                 ))}
                 </tbody>
