@@ -4,18 +4,22 @@ export interface Mission {
     launch_date_local: string;
     rocket: {
         rocket_name: string;
-        first_stage: {
-            cores: Array<Core>;
-        }
-        second_stage: {
-            payloads: Array<Payload>;
-        }
+        first_stage: FirstStage;
+        second_stage: SecondStage;
     }
     launch_success: boolean;
     links: {
         article_link: string;
         video_link: string;
     }
+}
+
+export interface FirstStage {
+    cores: Array<Core>;
+}
+
+export interface SecondStage {
+    payloads: Array<Payload>;
 }
 
 export interface Core {
