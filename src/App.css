@@ -44,6 +44,23 @@ html, body {
   }
 }
 
-.mission-list {
+.mission-details {
+  text-align: left;
+}
 
+.mission-details .attr {
+  font-weight: bold;
+}
+
+.mission-details .section {
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.mission-details .subsection {
+  font-size: 18px;
+  font-style: italic;
+  padding-bottom: 10px;
 }

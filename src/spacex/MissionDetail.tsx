@@ -35,48 +35,63 @@ const MissionDetail = () => {
             </Row>
             <Row>
                 <Col>
-                    <Row>
-                        <Col>Rocket</Col>
-                        <Col>{data.launch.rocket.rocket_name}</Col>
-                    </Row>
-                    <Row>
-                        <Col>First stage </Col>
-                    </Row>
+                    <div className="mission-details">
+                        <div>
+                            <span className="attr">Mission date: </span>
+                            <span>{data.launch.launch_date_local}</span>
+                        </div>
+                        <div>
+                            <span className="attr">Rocket: </span>
+                            <span>{data.launch.rocket.rocket_name}</span>
+                        </div>
+                        <div className="section">
+                            <span>First stage</span>
+                        </div>
 
-                    {data.launch.rocket.first_stage.cores.map((core: Core, i: number) => (
-                        <>
-                            <Row><Col>Core #{i}</Col></Row>
-                            <Row>
-                                <Col>Flight number</Col>
-                                <Col>{core.flight}</Col>
-                            </Row>
-                            <Row>
-                                <Col>Reuse count</Col>
-                                <Col>{core.core.reuse_count}</Col>
-                            </Row>
-                            <Row>
-                                <Col>Land success</Col>
-                                <Col>{core.land_success}</Col>
-                            </Row>
-                        </>
-                    ))}
+                        {data.launch.rocket.first_stage.cores.map((core: Core, i: number) => (
+                            <div>
+                                <div className="subsection">
+                                    <span className="attr">Core #{i + 1}</span>
+                                </div>
+                                <div>
+                                    <span className="attr">Flight number: </span>
+                                    <span>{core.flight}</span>
+                                </div>
+                                <div>
+                                    <span className="attr">Reuse count: </span>
+                                    <span>{core.core.reuse_count}</span>
+                                </div>
+                                <div>
+                                    <span className="attr">Land success: </span>
+                                    <span>{core.land_success}</span>
+                                </div>
+                            </div>
+                        ))}
 
-                    <Row>
-                        <Col>Second stage</Col>
-                    </Row>
-                    {data.launch.rocket.second_stage.payloads.map((payload: Payload, i: number) => (
-                        <>
-                            <Row><Col>Payload #{i}</Col></Row>
-                            <Row>
-                                <Col>Payload type</Col>
-                                <Col>{payload.payload_type}</Col>
-                            </Row>
-                            <Row>
-                                <Col>Payload weight</Col>
-                                <Col>{`${payload.payload_mass_kg} kg`}</Col>
-                            </Row>
-                        </>
-                    ))}
+                        <div className="section">
+                            <span>Second stage</span>
+                        </div>
+
+                        {data.launch.rocket.second_stage.payloads.map((payload: Payload, i: number) => (
+                            <div>
+                                <div className="subsection">
+                                    <span className="attr">Payload #{i + 1}</span>
+                                </div>
+                                <div>
+                                    <span className="attr">Payload type: </span>
+                                    <span>{payload.payload_type}</span>
+                                </div>
+                                <div>
+                                    <span className="attr">Payload weight: </span>
+                                    {payload.payload_mass_kg ? (
+                                        <span>{`${payload.payload_mass_kg} kg`}</span>
+                                    ) : (
+                                        <span>Unknown</span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </Col>
                 <Col>
                     <YouTube videoId={data.launch.links.video_link.split('youtu.be/')[1]}/>
