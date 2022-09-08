@@ -10,10 +10,11 @@ import { useQuery } from 'urql';
 import { LaunchesPastResponse, Mission } from './types/MissionTable';
 import { MissionsQuery } from './api-client';
 import SuccessOrFailure from '../common/SuccessOrFailure';
+import { localizeTimestamp } from '../util/date';
 
 const MissionTable = () => {
 
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const [columnMission, setColumnMission] = useState({
         id: 'mission',
@@ -68,7 +69,7 @@ const MissionTable = () => {
         <div>
             <Form>
                 <div key={`inline-checkbox`} className="mb-3">
-                    <Form.Check
+                    <Form.Switch
                         inline
                         label={t(columnMission.labelCode)}
                         name={columnMission.id}
@@ -81,7 +82,7 @@ const MissionTable = () => {
                             });
                         }}
                     />
-                    <Form.Check
+                    <Form.Switch
                         inline
                         label={t(columnRocket.labelCode)}
                         name={columnRocket.id}
@@ -94,7 +95,7 @@ const MissionTable = () => {
                             });
                         }}
                     />
-                    <Form.Check
+                    <Form.Switch
                         inline
                         label={t(columnDate.labelCode)}
                         name={columnDate.id}
@@ -107,7 +108,7 @@ const MissionTable = () => {
                             });
                         }}
                     />
-                    <Form.Check
+                    <Form.Switch
                         inline
                         label={t(columnLaunchSuccess.labelCode)}
                         name={columnLaunchSuccess.id}
@@ -120,7 +121,7 @@ const MissionTable = () => {
                             });
                         }}
                     />
-                    <Form.Check
+                    <Form.Switch
                         inline
                         label={t(columnLandSuccess.labelCode)}
                         name={columnLandSuccess.id}
@@ -153,7 +154,7 @@ const MissionTable = () => {
                     <tr key={pastLaunch.id}>
                         {columnMission.show && <td>{pastLaunch.mission_name}</td>}
                         {columnRocket.show && <td>{pastLaunch.rocket.rocket_name}</td>}
-                        {columnDate.show && <td>{pastLaunch.launch_date_local}</td>}
+                        {columnDate.show && <td>{localizeTimestamp(pastLaunch.launch_date_local, i18n.language)}</td>}
                         {columnLaunchSuccess.show && <td><SuccessOrFailure value={pastLaunch.launch_success}/></td>}
                         {columnLandSuccess.show && <td><SuccessOrFailure value={pastLaunch.rocket.first_stage.cores[0].land_success}/></td>}
                         <td>

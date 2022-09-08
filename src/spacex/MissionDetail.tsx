@@ -1,5 +1,5 @@
 import React from 'react';
-import { TFunction, withTranslation } from 'react-i18next';
+import { TFunction, useTranslation, withTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -13,6 +13,7 @@ import { MissionDetailQuery } from './api-client';
 import { Core, FirstStage, LaunchResponse, Payload, SecondStage } from './types/MissionTable';
 import Label from '../common/Label';
 import SuccessOrFailure from '../common/SuccessOrFailure';
+import { localizeTimestamp } from "../util/date";
 
 const FirstStageComp = withTranslation()(({ data, t }: { data: FirstStage, t: TFunction }) => (
     <div>
@@ -70,7 +71,8 @@ const SecondStageComp = withTranslation()(({ data, t }: { data: SecondStage, t: 
     </div>
 ));
 
-const MissionDetail = ({ t }: { t: TFunction }) => {
+const MissionDetail = () => {
+    const { t, i18n } = useTranslation();
     let params = useParams();
 
     // Fetching data
@@ -109,7 +111,7 @@ const MissionDetail = ({ t }: { t: TFunction }) => {
                             <Col>
                                 <div>
                                     <Label className="attr" translation="launch.attribute.mission_date"/>
-                                    <span className="data">{data.launch.launch_date_local}</span>
+                                    <span className="data">{localizeTimestamp(data.launch.launch_date_local, i18n.language)}</span>
                                 </div>
                                 <div>
                                     <Label className="attr" translation="launch.attribute.mission_date"/>
@@ -143,4 +145,4 @@ const MissionDetail = ({ t }: { t: TFunction }) => {
     )
 };
 
-export default withTranslation()(MissionDetail);
+export default MissionDetail;
