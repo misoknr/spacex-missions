@@ -1,7 +1,11 @@
 {
   "button": {
     "detail": "Detail",
-    "back": "Back"
+    "back": "Back",
+    "language": {
+      "en": "EN",
+      "sk": "SK"
+    }
   },
   "common": {
     "success": "Success",

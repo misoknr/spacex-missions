@@ -1,7 +1,11 @@
 {
   "button": {
     "detail": "Detail",
-    "back": "Späť"
+    "back": "Späť",
+    "language": {
+      "en": "EN",
+      "sk": "SK"
+    }
   },
   "common": {
     "success": "Úspešné",

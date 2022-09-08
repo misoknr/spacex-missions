@@ -54,6 +54,10 @@ html, body {
   position: relative;
 }
 
+.mission-list h1 {
+  padding-bottom: 30px;
+}
+
 .mission-header .back {
   position: absolute;
   left: 0;

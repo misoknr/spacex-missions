@@ -17,31 +17,31 @@ const MissionTable = () => {
 
     const [columnMission, setColumnMission] = useState({
         id: 'mission',
-        name: t('launch.attribute.mission_name'),
+        labelCode: 'launch.attribute.mission_name',
         show: true,
     });
 
     const [columnDate, setColumnDate] = useState({
         id: 'date',
-        name: t('launch.attribute.mission_date'),
+        labelCode: 'launch.attribute.mission_date',
         show: true,
     });
 
     const [columnRocket, setColumnRocket] = useState({
         id: 'rocket',
-        name: t('launch.attribute.rocket_name'),
+        labelCode: 'launch.attribute.rocket_name',
         show: true,
     });
 
     const [columnLaunchSuccess, setColumnLaunchSuccess] = useState({
         id: 'launch_success',
-        name: t('launch.attribute.launch'),
+        labelCode: 'launch.attribute.launch',
         show: true,
     });
 
     const [columnLandSuccess, setColumnLandSuccess] = useState({
         id: 'land_success',
-        name: t('launch.attribute.landing'),
+        labelCode: 'launch.attribute.landing',
         show: true,
     });
 
@@ -70,7 +70,7 @@ const MissionTable = () => {
                 <div key={`inline-checkbox`} className="mb-3">
                     <Form.Check
                         inline
-                        label={columnMission.name}
+                        label={t(columnMission.labelCode)}
                         name={columnMission.id}
                         type="checkbox"
                         id={columnMission.id}
@@ -83,7 +83,7 @@ const MissionTable = () => {
                     />
                     <Form.Check
                         inline
-                        label={columnRocket.name}
+                        label={t(columnRocket.labelCode)}
                         name={columnRocket.id}
                         type="checkbox"
                         id={columnRocket.id}
@@ -96,7 +96,7 @@ const MissionTable = () => {
                     />
                     <Form.Check
                         inline
-                        label={columnDate.name}
+                        label={t(columnDate.labelCode)}
                         name={columnDate.id}
                         type="checkbox"
                         id={columnDate.id}
@@ -109,7 +109,7 @@ const MissionTable = () => {
                     />
                     <Form.Check
                         inline
-                        label={columnLaunchSuccess.name}
+                        label={t(columnLaunchSuccess.labelCode)}
                         name={columnLaunchSuccess.id}
                         type="checkbox"
                         id={columnLaunchSuccess.id}
@@ -122,7 +122,7 @@ const MissionTable = () => {
                     />
                     <Form.Check
                         inline
-                        label={columnLandSuccess.name}
+                        label={t(columnLandSuccess.labelCode)}
                         name={columnLandSuccess.id}
                         type="checkbox"
                         id={columnLandSuccess.id}
@@ -139,11 +139,11 @@ const MissionTable = () => {
             <Table striped variant="dark">
                 <thead>
                 <tr>
-                    {columnMission.show && <th>{columnMission.name}</th>}
-                    {columnRocket.show && <th>{columnRocket.name}</th>}
-                    {columnDate.show && <th>{columnDate.name}</th>}
-                    {columnLaunchSuccess.show && <th>{columnLaunchSuccess.name}</th>}
-                    {columnLandSuccess.show && <th>{columnLandSuccess.name}</th>}
+                    {columnMission.show && <th>{t(columnMission.labelCode)}</th>}
+                    {columnRocket.show && <th>{t(columnRocket.labelCode)}</th>}
+                    {columnDate.show && <th>{t(columnDate.labelCode)}</th>}
+                    {columnLaunchSuccess.show && <th>{t(columnLaunchSuccess.labelCode)}</th>}
+                    {columnLandSuccess.show && <th>{t(columnLandSuccess.labelCode)}</th>}
                     <th/>
                 </tr>
                 </thead>
