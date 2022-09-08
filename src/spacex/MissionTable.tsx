@@ -6,7 +6,7 @@ import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'urql';
 
-import { Mission } from "./types/MissionTable";
+import { LaunchesPastResponse, Mission } from "./types/MissionTable";
 import { MissionsQuery } from "./api-client";
 
 const MissionTable = () => {
@@ -42,7 +42,7 @@ const MissionTable = () => {
     });
 
     // Fetching data
-    const [result, reexecuteQuery] = useQuery({
+    const [result, reexecuteQuery] = useQuery<LaunchesPastResponse>({
         query: MissionsQuery(20),
     });
 
@@ -54,6 +54,10 @@ const MissionTable = () => {
 
     if (error) {
         return <p>Something went wrong... {error.message}</p>;
+    }
+
+    if (!data) {
+        return <p>Sorry, no data...</p>
     }
 
     return (

@@ -1,3 +1,11 @@
+export interface LaunchResponse {
+    launch: Mission;
+}
+
+export interface LaunchesPastResponse {
+    launchesPast: Array<Mission>;
+}
+
 export interface Mission {
     id: string;
     mission_name: string;

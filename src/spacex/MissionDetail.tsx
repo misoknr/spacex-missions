@@ -1,14 +1,15 @@
 import React from 'react';
-import Spinner from "react-bootstrap/Spinner";
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useParams } from "react-router-dom";
+import Spinner from 'react-bootstrap/Spinner';
+import { Link, useParams } from 'react-router-dom';
 import YouTube from 'react-youtube';
 import { useQuery } from "urql";
 
 import { MissionDetailQuery } from "./api-client";
-import { Core, FirstStage, Payload, SecondStage } from "./types/MissionTable";
+import { Core, FirstStage, LaunchResponse, Payload, SecondStage } from "./types/MissionTable";
 
 const FirstStageComp = (props: { data: FirstStage }) => (
     <div>
@@ -23,15 +24,15 @@ const FirstStageComp = (props: { data: FirstStage }) => (
                 </div>
                 <div>
                     <span className="attr">Flight number: </span>
-                    <span>{core.flight}</span>
+                    <span className="data">{core.flight}</span>
                 </div>
                 <div>
                     <span className="attr">Reuse count: </span>
-                    <span>{core.core.reuse_count}</span>
+                    <span className="data">{core.core.reuse_count}</span>
                 </div>
                 <div>
-                    <span className="attr">Land success: </span>
-                    <span>{core.land_success}</span>
+                    <span className="attr">Landing: </span>
+                    <span className="data">{core.land_success ? 'Success' : 'Failure'}</span>
                 </div>
             </div>
         ))}
@@ -51,14 +52,14 @@ const SecondStageComp = (props: { data: SecondStage }) => (
                 </div>
                 <div>
                     <span className="attr">Payload type: </span>
-                    <span>{payload.payload_type}</span>
+                    <span className="data">{payload.payload_type}</span>
                 </div>
                 <div>
                     <span className="attr">Payload weight: </span>
                     {payload.payload_mass_kg ? (
-                        <span>{`${payload.payload_mass_kg} kg`}</span>
+                        <span className="data">{`${payload.payload_mass_kg} kg`}</span>
                     ) : (
-                        <span>Unknown</span>
+                        <span className="data">Unknown</span>
                     )}
                 </div>
             </div>
@@ -70,7 +71,7 @@ const MissionDetail = () => {
     let params = useParams();
 
     // Fetching data
-    const [result, reexecuteQuery] = useQuery({
+    const [result, reexecuteQuery] = useQuery<LaunchResponse>({
         query: MissionDetailQuery(params.id),
     });
 
@@ -84,10 +85,19 @@ const MissionDetail = () => {
         return <p>Something went wrong... {error.message}</p>;
     }
 
+    if (!data) {
+        return <p>Sorry, no data...</p>
+    }
+
     return (
         <Container>
             <Row style={{paddingBottom: '50px'}}>
-                <h2>Mission: {data.launch.mission_name}</h2>
+                <Col>
+                    <div className="mission-header">
+                        <Link className="back" to="/"><Button variant="light">Go back</Button></Link>
+                        <h2>Mission: {data.launch.mission_name}</h2>
+                    </div>
+                </Col>
             </Row>
             <Row>
                 <Col>
@@ -96,11 +106,19 @@ const MissionDetail = () => {
                             <Col>
                                 <div>
                                     <span className="attr">Mission date: </span>
-                                    <span>{data.launch.launch_date_local}</span>
+                                    <span className="data">{data.launch.launch_date_local}</span>
                                 </div>
                                 <div>
                                     <span className="attr">Rocket: </span>
-                                    <span>{data.launch.rocket.rocket_name}</span>
+                                    <span className="data">{data.launch.rocket.rocket_name}</span>
+                                </div>
+                                <div>
+                                    <span className="attr">Article: </span>
+                                    {data.launch.links.article_link ? (
+                                        <a href={data.launch.links.article_link} target="_blank">{data.launch.links.article_link}</a>
+                                    ) : (
+                                        <span className="data">Unavailable</span>
+                                    )}
                                 </div>
                             </Col>
                         </Row>

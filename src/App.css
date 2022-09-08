@@ -5,7 +5,7 @@ html, body {
 .App {
   text-align: center;
   background-color: #111;
-  color: beige;
+  color: lightpink;
   padding: 50px 100px;
 }
 
@@ -48,8 +48,23 @@ html, body {
   text-align: left;
 }
 
+.mission-header {
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.mission-header .back {
+  position: absolute;
+  left: 0;
+}
+
 .mission-details .attr {
   font-weight: bold;
+}
+
+.mission-details .data {
+  color: white;
 }
 
 .mission-details .section {
