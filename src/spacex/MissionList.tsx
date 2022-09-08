@@ -1,11 +1,16 @@
 import React from 'react';
-import MissionTable from "./MissionTable";
+import { useTranslation } from 'react-i18next';
+import MissionTable from './MissionTable';
 
-const MissionList = () => (
-    <div className="mission-list">
-        <h1>SpaceX Mission List</h1>
-        <MissionTable/>
-    </div>
-)
+const MissionList = () => {
+    const { t } = useTranslation();
+
+    return (
+        <div className="mission-list">
+            <h1>{t('list.header')}</h1>
+            <MissionTable/>
+        </div>
+    )
+}
 
 export default MissionList;

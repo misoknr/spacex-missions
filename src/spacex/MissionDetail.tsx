@@ -1,4 +1,5 @@
 import React from 'react';
+import { TFunction, withTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -6,68 +7,70 @@ import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 import { Link, useParams } from 'react-router-dom';
 import YouTube from 'react-youtube';
-import { useQuery } from "urql";
+import { useQuery } from 'urql';
 
-import { MissionDetailQuery } from "./api-client";
-import { Core, FirstStage, LaunchResponse, Payload, SecondStage } from "./types/MissionTable";
+import { MissionDetailQuery } from './api-client';
+import { Core, FirstStage, LaunchResponse, Payload, SecondStage } from './types/MissionTable';
+import Label from '../common/Label';
+import SuccessOrFailure from '../common/SuccessOrFailure';
 
-const FirstStageComp = (props: { data: FirstStage }) => (
+const FirstStageComp = withTranslation()(({ data, t }: { data: FirstStage, t: TFunction }) => (
     <div>
         <div className="section">
-            <span>First stage</span>
+            <span>{t('common.first_stage')}</span>
         </div>
 
-        {props.data.cores.map((core: Core, i: number) => (
+        {data.cores.map((core: Core, i: number) => (
             <div>
                 <div className="subsection">
-                    <span className="attr">Core #{i + 1}</span>
+                    <span className="attr">{`${t('common.core')} #${i + 1}`}</span>
                 </div>
                 <div>
-                    <span className="attr">Flight number: </span>
+                    <Label className="attr" translation="launch.attribute.flight_number"/>
                     <span className="data">{core.flight}</span>
                 </div>
                 <div>
-                    <span className="attr">Reuse count: </span>
+                    <Label className="attr" translation="launch.attribute.reuse_count"/>
                     <span className="data">{core.core.reuse_count}</span>
                 </div>
                 <div>
-                    <span className="attr">Landing: </span>
-                    <span className="data">{core.land_success ? 'Success' : 'Failure'}</span>
+                    <Label className="attr" translation="launch.attribute.landing"/>
+                    <span className="data"><SuccessOrFailure value={core.land_success}/></span>
                 </div>
             </div>
         ))}
     </div>
-);
+))
 
-const SecondStageComp = (props: { data: SecondStage }) => (
+const SecondStageComp = withTranslation()(({ data, t }: { data: SecondStage, t: TFunction }) => (
     <div>
         <div className="section">
-            <span>Second stage</span>
+            <span>{t('common.second_stage')}</span>
         </div>
 
-        {props.data.payloads.map((payload: Payload, i: number) => (
+        {data.payloads.map((payload: Payload, i: number) => (
             <div>
                 <div className="subsection">
-                    <span className="attr">Payload #{i + 1}</span>
+                    <span className="attr">{`${t('common.payload')} #${i + 1}`}</span>
                 </div>
                 <div>
-                    <span className="attr">Payload type: </span>
+                    <Label className="attr" translation="launch.attribute.payload_type"/>
                     <span className="data">{payload.payload_type}</span>
                 </div>
                 <div>
-                    <span className="attr">Payload weight: </span>
+                    <Label className="attr" translation="launch.attribute.payload_weight"/>
                     {payload.payload_mass_kg ? (
                         <span className="data">{`${payload.payload_mass_kg} kg`}</span>
                     ) : (
-                        <span className="data">Unknown</span>
+                        <span className="data">{t('common.not_available')}</span>
                     )}
                 </div>
             </div>
         ))}
     </div>
-);
+));
 
-const MissionDetail = () => {
+const MissionDetail = ({ t }: { t: TFunction }) => {
     let params = useParams();
 
     // Fetching data
@@ -75,7 +78,7 @@ const MissionDetail = () => {
         query: MissionDetailQuery(params.id),
     });
 
-    const {data, fetching, error} = result;
+    const { data, fetching, error } = result;
 
     if (fetching) {
         return <Spinner animation="border"/>
@@ -91,11 +94,11 @@ const MissionDetail = () => {
 
     return (
         <Container>
-            <Row style={{paddingBottom: '50px'}}>
+            <Row style={{ paddingBottom: '50px' }}>
                 <Col>
                     <div className="mission-header">
-                        <Link className="back" to="/"><Button variant="light">Go back</Button></Link>
-                        <h2>Mission: {data.launch.mission_name}</h2>
+                        <Link className="back" to="/"><Button variant="light">{t('button.back')}</Button></Link>
+                        <h2>{`${t('launch.attribute.mission_name')}: ${data.launch.mission_name}`}</h2>
                     </div>
                 </Col>
             </Row>
@@ -105,19 +108,19 @@ const MissionDetail = () => {
                         <Row>
                             <Col>
                                 <div>
-                                    <span className="attr">Mission date: </span>
+                                    <Label className="attr" translation="launch.attribute.mission_date"/>
                                     <span className="data">{data.launch.launch_date_local}</span>
                                 </div>
                                 <div>
-                                    <span className="attr">Rocket: </span>
+                                    <Label className="attr" translation="launch.attribute.mission_date"/>
                                     <span className="data">{data.launch.rocket.rocket_name}</span>
                                 </div>
                                 <div>
-                                    <span className="attr">Article: </span>
+                                    <Label className="attr" translation="launch.attribute.article"/>
                                     {data.launch.links.article_link ? (
                                         <a href={data.launch.links.article_link} target="_blank">{data.launch.links.article_link}</a>
                                     ) : (
-                                        <span className="data">Unavailable</span>
+                                        <span className="data">{t('common.not_available')}</span>
                                     )}
                                 </div>
                             </Col>
@@ -140,4 +143,4 @@ const MissionDetail = () => {
     )
 };
 
-export default MissionDetail;
+export default withTranslation()(MissionDetail);

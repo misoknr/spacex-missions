@@ -1,0 +1,42 @@
+{
+  "button": {
+    "detail": "Detail",
+    "back": "Back"
+  },
+  "common": {
+    "success": "Success",
+    "failure": "Failure",
+    "first_stage": "First stage",
+    "second_stage": "Second stage",
+    "core": "Core",
+    "payload": "Payload",
+    "not_available": "Not available"
+  },
+  "message": {
+    "error": {
+      "general": "Something went wrong..."
+    },
+    "info": {
+      "no_data": "Sorry, no data..."
+    }
+  },
+  "launch": {
+    "attribute": {
+      "article": "Article",
+      "mission_name": "Mission name",
+      "mission_date": "Mission date",
+      "rocket_name": "Rocket name",
+      "launch": "Launch",
+      "landing": "Landing",
+      "flight_number": "Flight number",
+      "reuse_count": "Reuse count",
+      "payload_type": "Payload type",
+      "payload_weight": "Payload weight"
+    }
+  },
+  "list": {
+    "header": "SpaceX Mission list"
+  },
+  "detail": {
+  }
+}

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Route, Routes } from "react-router-dom";
-import { Provider } from "urql";
+import { Route, Routes } from 'react-router-dom';
+import { Provider } from 'urql';
 
 import { spacexClient } from './spacex/api-client'
-import MissionDetail from "./spacex/MissionDetail";
-import MissionList from "./spacex/MissionList";
+import MissionDetail from './spacex/MissionDetail';
+import MissionList from './spacex/MissionList';
 import './App.css';
 
 function App() {

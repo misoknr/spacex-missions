@@ -1,0 +1,42 @@
+{
+  "button": {
+    "detail": "Detail",
+    "back": "Späť"
+  },
+  "common": {
+    "success": "Úspešné",
+    "failure": "Neúspešné",
+    "first_stage": "Prvý stupeň",
+    "second_stage": "Druhý stupeň",
+    "core": "Časť",
+    "payload": "Náklad",
+    "not_available": "Nedostupné"
+  },
+  "message": {
+    "error": {
+      "general": "Niečo sa stalo..."
+    },
+    "info": {
+      "no_data": "Prepáč, nemám žiadne dáta..."
+    }
+  },
+  "launch": {
+    "attribute": {
+      "article": "Článok",
+      "mission_name": "Misia",
+      "mission_date": "Dátum misie",
+      "rocket_name": "Názov rakety",
+      "launch": "Štart",
+      "landing": "Pristátie",
+      "flight_number": "Let číslo",
+      "reuse_count": "Počet použití",
+      "payload_type": "Typ nákladu",
+      "payload_weight": "Váha nákladu"
+    }
+  },
+  "list": {
+    "header": "SpaceX Zoznam misii"
+  },
+  "detail": {
+  }
+}

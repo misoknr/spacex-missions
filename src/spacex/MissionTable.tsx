@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
@@ -6,38 +7,41 @@ import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'urql';
 
-import { LaunchesPastResponse, Mission } from "./types/MissionTable";
-import { MissionsQuery } from "./api-client";
+import { LaunchesPastResponse, Mission } from './types/MissionTable';
+import { MissionsQuery } from './api-client';
+import SuccessOrFailure from '../common/SuccessOrFailure';
 
 const MissionTable = () => {
 
+    const { t } = useTranslation();
+
     const [columnMission, setColumnMission] = useState({
         id: 'mission',
-        name: 'Mission name',
+        name: t('launch.attribute.mission_name'),
         show: true,
     });
 
     const [columnDate, setColumnDate] = useState({
         id: 'date',
-        name: 'Mission date',
+        name: t('launch.attribute.mission_date'),
         show: true,
     });
 
     const [columnRocket, setColumnRocket] = useState({
         id: 'rocket',
-        name: 'Rocket name',
+        name: t('launch.attribute.rocket_name'),
         show: true,
     });
 
     const [columnLaunchSuccess, setColumnLaunchSuccess] = useState({
         id: 'launch_success',
-        name: 'Launch success',
+        name: t('launch.attribute.launch'),
         show: true,
     });
 
     const [columnLandSuccess, setColumnLandSuccess] = useState({
         id: 'land_success',
-        name: 'Land success',
+        name: t('launch.attribute.landing'),
         show: true,
     });
 
@@ -46,18 +50,18 @@ const MissionTable = () => {
         query: MissionsQuery(20),
     });
 
-    const {data, fetching, error} = result;
+    const { data, fetching, error } = result;
 
     if (fetching) {
         return <Spinner animation="border"/>
     }
 
     if (error) {
-        return <p>Something went wrong... {error.message}</p>;
+        return <p>{`${t('message.error.general')} ${error.message}`}</p>;
     }
 
     if (!data) {
-        return <p>Sorry, no data...</p>
+        return <p>{t('message.info.no_data')}</p>
     }
 
     return (
@@ -150,11 +154,11 @@ const MissionTable = () => {
                         {columnMission.show && <td>{pastLaunch.mission_name}</td>}
                         {columnRocket.show && <td>{pastLaunch.rocket.rocket_name}</td>}
                         {columnDate.show && <td>{pastLaunch.launch_date_local}</td>}
-                        {columnLaunchSuccess.show && <td>{pastLaunch.launch_success ? 'Success' : 'Failure'}</td>}
-                        {columnLandSuccess.show && <td>{pastLaunch.rocket.first_stage.cores[0].land_success ? 'Success' : 'Failure'}</td>}
+                        {columnLaunchSuccess.show && <td><SuccessOrFailure value={pastLaunch.launch_success}/></td>}
+                        {columnLandSuccess.show && <td><SuccessOrFailure value={pastLaunch.rocket.first_stage.cores[0].land_success}/></td>}
                         <td>
                             <Link to={`launch/${pastLaunch.id}`}>
-                                <Button variant="outline-info">Detail</Button>
+                                <Button variant="outline-info">{t('button.detail')}</Button>
                             </Link>
                         </td>
                     </tr>
