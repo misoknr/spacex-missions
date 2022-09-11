@@ -7,8 +7,8 @@ import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
 import { useQuery } from 'urql';
 
-import { LaunchesPastResponse, Mission } from './types/MissionTable';
-import { MissionsQuery } from './api-client';
+import { LaunchesPastResponse, Mission } from './types/launch';
+import { MissionsQuery } from './api/graphql-client';
 import SuccessOrFailure from '../common/SuccessOrFailure';
 import { localizeTimestamp } from '../util/date';
 

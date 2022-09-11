@@ -1,7 +1,7 @@
 import React from 'react';
-import { Navbar } from "react-bootstrap";
+import { Navbar } from 'react-bootstrap';
 
-import LanguageSelector from "./LanguageSelector";
+import LanguageSelector from './LanguageSelector';
 
 const AppHeader = () => (
     <Navbar sticky="top">

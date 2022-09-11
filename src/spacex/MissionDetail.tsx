@@ -9,11 +9,11 @@ import { Link, useParams } from 'react-router-dom';
 import YouTube from 'react-youtube';
 import { useQuery } from 'urql';
 
-import { MissionDetailQuery } from './api-client';
-import { Core, FirstStage, LaunchResponse, Payload, SecondStage } from './types/MissionTable';
+import { MissionDetailQuery } from './api/graphql-client';
+import { Core, FirstStage, LaunchResponse, Payload, SecondStage } from './types/launch';
 import Label from '../common/Label';
 import SuccessOrFailure from '../common/SuccessOrFailure';
-import { localizeTimestamp } from "../util/date";
+import { localizeTimestamp } from '../util/date';
 
 const FirstStageComp = withTranslation()(({ data, t }: { data: FirstStage, t: TFunction }) => (
     <div>

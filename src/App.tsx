@@ -2,8 +2,8 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Provider } from 'urql';
 
-import AppHeader from "./app/AppHeader";
-import { spacexClient } from './spacex/api-client'
+import AppHeader from './app/AppHeader';
+import { spacexClient } from './spacex/api/graphql-client'
 import MissionDetail from './spacex/MissionDetail';
 import MissionList from './spacex/MissionList';
 import './App.css';
