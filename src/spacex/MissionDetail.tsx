@@ -1,5 +1,5 @@
 import React from 'react';
-import { TFunction, useTranslation, withTranslation } from 'react-i18next';
+import { useTranslation, WithTranslation, withTranslation } from 'react-i18next';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -15,14 +15,22 @@ import Label from '../common/Label';
 import SuccessOrFailure from '../common/SuccessOrFailure';
 import { localizeTimestamp } from '../util/date';
 
-const FirstStageComp = withTranslation()(({ data, t }: { data: FirstStage, t: TFunction }) => (
+type FirstStageCompProps = {
+    data: FirstStage;
+} & WithTranslation;
+
+type SecondStageCompProps = {
+    data: SecondStage;
+} & WithTranslation;
+
+const FirstStageComp = withTranslation()(({ data, t }: FirstStageCompProps) => (
     <div>
         <div className="section">
             <span>{t('common.first_stage')}</span>
         </div>
 
         {data.cores.map((core: Core, i: number) => (
-            <div>
+            <div key={`core-${i}`}>
                 <div className="subsection">
                     <span className="attr">{`${t('common.core')} #${i + 1}`}</span>
                 </div>
@@ -43,14 +51,14 @@ const FirstStageComp = withTranslation()(({ data, t }: { data: FirstStage, t: TF
     </div>
 ))
 
-const SecondStageComp = withTranslation()(({ data, t }: { data: SecondStage, t: TFunction }) => (
+const SecondStageComp = withTranslation()(({ data, t }: SecondStageCompProps) => (
     <div>
         <div className="section">
             <span>{t('common.second_stage')}</span>
         </div>
 
         {data.payloads.map((payload: Payload, i: number) => (
-            <div>
+            <div key={`payload-${i}`}>
                 <div className="subsection">
                     <span className="attr">{`${t('common.payload')} #${i + 1}`}</span>
                 </div>
@@ -73,10 +81,10 @@ const SecondStageComp = withTranslation()(({ data, t }: { data: SecondStage, t: 
 
 const MissionDetail = () => {
     const { t, i18n } = useTranslation();
-    let params = useParams();
+    const params = useParams();
 
     // Fetching data
-    const [result, reexecuteQuery] = useQuery<LaunchResponse>({
+    const [result] = useQuery<LaunchResponse>({
         query: MissionDetailQuery(params.id),
     });
 

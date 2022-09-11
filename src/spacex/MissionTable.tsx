@@ -1,55 +1,74 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
 import Table from 'react-bootstrap/Table';
 import { useTranslation } from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
-import { Query } from 'urql';
+import { useQuery } from 'urql';
 
-import { Mission } from './types/launch';
+import { LaunchesPastResponse, Mission } from './types/launch';
 import SuccessOrFailure from '../common/SuccessOrFailure';
 import { localizeTimestamp } from '../util/date';
-import { MissionsQuery } from "./api/graphql-client";
+import { MissionsQuery } from './api/graphql-client';
 
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 15;
+
+interface IColumn {
+    id: string;
+    labelCode: string;
+    show: boolean;
+}
 
 const MissionTable = () => {
 
     const { t, i18n } = useTranslation();
 
-    const [offsets, setOffsets] = useState([0]);
+    const [offset, setOffset] = useState<number>(0);
+    const [missions, setMissions] = useState<Array<Mission>>([]);
 
-    const [columnMission, setColumnMission] = useState({
+    const [columnMission, setColumnMission] = useState<IColumn>({
         id: 'mission',
         labelCode: 'launch.attribute.mission_name',
         show: true,
     });
 
-    const [columnDate, setColumnDate] = useState({
+    const [columnDate, setColumnDate] = useState<IColumn>({
         id: 'date',
         labelCode: 'launch.attribute.mission_date',
         show: true,
     });
 
-    const [columnRocket, setColumnRocket] = useState({
+    const [columnRocket, setColumnRocket] = useState<IColumn>({
         id: 'rocket',
         labelCode: 'launch.attribute.rocket_name',
         show: true,
     });
 
-    const [columnLaunchSuccess, setColumnLaunchSuccess] = useState({
+    const [columnLaunchSuccess, setColumnLaunchSuccess] = useState<IColumn>({
         id: 'launch_success',
         labelCode: 'launch.attribute.launch',
         show: true,
     });
 
-    const [columnLandSuccess, setColumnLandSuccess] = useState({
+    const [columnLandSuccess, setColumnLandSuccess] = useState<IColumn>({
         id: 'land_success',
         labelCode: 'launch.attribute.landing',
         show: true,
     });
+
+    // Fetching data
+    const [result] = useQuery<LaunchesPastResponse>({
+        query: MissionsQuery(PAGE_SIZE, offset),
+    });
+
+    const { data, fetching } = result;
+
+    useEffect(() => {
+        setMissions(data && data.launchesPast ? missions.concat(data.launchesPast) : missions);
+    }, [data])
 
     return (
         <div>
@@ -124,8 +143,8 @@ const MissionTable = () => {
             </Form>
 
             <InfiniteScroll
-                dataLength={offsets.length * PAGE_SIZE}
-                next={() => setOffsets([...offsets, offsets.length * PAGE_SIZE])}
+                dataLength={missions.length}
+                next={() => setOffset(offset + PAGE_SIZE)}
                 hasMore={true}
                 loader=""
                 scrollThreshold={1}
@@ -143,39 +162,30 @@ const MissionTable = () => {
                     </thead>
 
                     <tbody>
-                    {offsets.map(offset => (
-                        <Query key={offset} query={MissionsQuery(PAGE_SIZE, offset)}>
-                            {({ data }) => {
-
-                                if (!data || !data.launchesPast) {
-                                    return <></>
-                                }
-
-                                return (
-                                    <>
-                                        {data.launchesPast.map((pastLaunch: Mission) => (
-                                            <tr key={pastLaunch.id}>
-                                                {columnMission.show && <td>{pastLaunch.mission_name}</td>}
-                                                {columnRocket.show && <td>{pastLaunch.rocket.rocket_name}</td>}
-                                                {columnDate.show && <td>{localizeTimestamp(pastLaunch.launch_date_local, i18n.language)}</td>}
-                                                {columnLaunchSuccess.show && <td><SuccessOrFailure value={pastLaunch.launch_success}/></td>}
-                                                {columnLandSuccess.show &&
-                                                    <td><SuccessOrFailure value={pastLaunch.rocket.first_stage.cores[0].land_success}/></td>}
-                                                <td>
-                                                    <Link to={`launch/${pastLaunch.id}`}>
-                                                        <Button variant="outline-info">{t('button.detail')}</Button>
-                                                    </Link>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </>
-                                )
-                            }}
-                        </Query>
+                    {missions.map((pastLaunch: Mission) => (
+                        <tr key={pastLaunch.id}>
+                            {columnMission.show && <td>{pastLaunch.mission_name}</td>}
+                            {columnRocket.show && <td>{pastLaunch.rocket.rocket_name}</td>}
+                            {columnDate.show && <td>{localizeTimestamp(pastLaunch.launch_date_local, i18n.language)}</td>}
+                            {columnLaunchSuccess.show && <td><SuccessOrFailure value={pastLaunch.launch_success}/></td>}
+                            {columnLandSuccess.show &&
+                                <td><SuccessOrFailure value={pastLaunch.rocket.first_stage.cores[0].land_success}/></td>}
+                            <td>
+                                <Link to={`launch/${pastLaunch.id}`}>
+                                    <Button variant="outline-info">{t('button.detail')}</Button>
+                                </Link>
+                            </td>
+                        </tr>
                     ))}
                     </tbody>
                 </Table>
             </InfiniteScroll>
+
+            {fetching && (
+                <div>
+                    <Spinner animation="border"/>
+                </div>
+            )}
         </div>
     );
 }
