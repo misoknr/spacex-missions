@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import Spinner from 'react-bootstrap/Spinner';
 import Table from 'react-bootstrap/Table';
 import { useTranslation } from 'react-i18next';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
-import { CombinedError, Query } from 'urql';
+import { Query } from 'urql';
 
 import { Mission } from './types/launch';
 import SuccessOrFailure from '../common/SuccessOrFailure';
 import { localizeTimestamp } from '../util/date';
 import { MissionsQuery } from "./api/graphql-client";
 
-interface IData {
-    missions: Array<Mission>;
-    fetching: boolean;
-    error: CombinedError | null;
-}
 
 const PAGE_SIZE = 12;
 
@@ -26,12 +20,6 @@ const MissionTable = () => {
     const { t, i18n } = useTranslation();
 
     const [offsets, setOffsets] = useState([0]);
-
-    // const [data, setData] = useState<IData>({
-    //     missions: [],
-    //     fetching: true,
-    //     error: null
-    // });
 
     const [columnMission, setColumnMission] = useState({
         id: 'mission',
@@ -157,21 +145,7 @@ const MissionTable = () => {
                     <tbody>
                     {offsets.map(offset => (
                         <Query key={offset} query={MissionsQuery(PAGE_SIZE, offset)}>
-                            {({ fetching, data, error }) => {
-
-                                // if (fetching) {
-                                //     return <tr><Spinner animation="border"/></tr>
-                                // }
-                                //
-                                // if (error) {
-                                //     // return <p>{`${t('message.error.general')} ${error.message}`}</p>;
-                                //     return <></>
-                                // }
-                                //
-                                // if (!data) {
-                                //     // return <p>{t('message.info.no_data')}</p>
-                                //     return <></>
-                                // }
+                            {({ data }) => {
 
                                 if (!data || !data.launchesPast) {
                                     return <></>
@@ -193,8 +167,7 @@ const MissionTable = () => {
                                                     </Link>
                                                 </td>
                                             </tr>
-                                        ))
-                                        }
+                                        ))}
                                     </>
                                 )
                             }}
