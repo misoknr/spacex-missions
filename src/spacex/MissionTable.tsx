@@ -1,20 +1,37 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
-import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import { useTranslation } from 'react-i18next';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from 'react-router-dom';
-import { useQuery } from 'urql';
+import { CombinedError, Query } from 'urql';
 
-import { LaunchesPastResponse, Mission } from './types/launch';
-import { MissionsQuery } from './api/graphql-client';
+import { Mission } from './types/launch';
 import SuccessOrFailure from '../common/SuccessOrFailure';
 import { localizeTimestamp } from '../util/date';
+import { MissionsQuery } from "./api/graphql-client";
+
+interface IData {
+    missions: Array<Mission>;
+    fetching: boolean;
+    error: CombinedError | null;
+}
+
+const PAGE_SIZE = 12;
 
 const MissionTable = () => {
 
     const { t, i18n } = useTranslation();
+
+    const [offsets, setOffsets] = useState([0]);
+
+    // const [data, setData] = useState<IData>({
+    //     missions: [],
+    //     fetching: true,
+    //     error: null
+    // });
 
     const [columnMission, setColumnMission] = useState({
         id: 'mission',
@@ -45,25 +62,6 @@ const MissionTable = () => {
         labelCode: 'launch.attribute.landing',
         show: true,
     });
-
-    // Fetching data
-    const [result, reexecuteQuery] = useQuery<LaunchesPastResponse>({
-        query: MissionsQuery(20),
-    });
-
-    const { data, fetching, error } = result;
-
-    if (fetching) {
-        return <Spinner animation="border"/>
-    }
-
-    if (error) {
-        return <p>{`${t('message.error.general')} ${error.message}`}</p>;
-    }
-
-    if (!data) {
-        return <p>{t('message.info.no_data')}</p>
-    }
 
     return (
         <div>
@@ -137,35 +135,74 @@ const MissionTable = () => {
                 </div>
             </Form>
 
-            <Table striped variant="dark">
-                <thead>
-                <tr>
-                    {columnMission.show && <th>{t(columnMission.labelCode)}</th>}
-                    {columnRocket.show && <th>{t(columnRocket.labelCode)}</th>}
-                    {columnDate.show && <th>{t(columnDate.labelCode)}</th>}
-                    {columnLaunchSuccess.show && <th>{t(columnLaunchSuccess.labelCode)}</th>}
-                    {columnLandSuccess.show && <th>{t(columnLandSuccess.labelCode)}</th>}
-                    <th/>
-                </tr>
-                </thead>
-
-                <tbody>
-                {data.launchesPast.map((pastLaunch: Mission) => (
-                    <tr key={pastLaunch.id}>
-                        {columnMission.show && <td>{pastLaunch.mission_name}</td>}
-                        {columnRocket.show && <td>{pastLaunch.rocket.rocket_name}</td>}
-                        {columnDate.show && <td>{localizeTimestamp(pastLaunch.launch_date_local, i18n.language)}</td>}
-                        {columnLaunchSuccess.show && <td><SuccessOrFailure value={pastLaunch.launch_success}/></td>}
-                        {columnLandSuccess.show && <td><SuccessOrFailure value={pastLaunch.rocket.first_stage.cores[0].land_success}/></td>}
-                        <td>
-                            <Link to={`launch/${pastLaunch.id}`}>
-                                <Button variant="outline-info">{t('button.detail')}</Button>
-                            </Link>
-                        </td>
+            <InfiniteScroll
+                dataLength={offsets.length * PAGE_SIZE}
+                next={() => setOffsets([...offsets, offsets.length * PAGE_SIZE])}
+                hasMore={true}
+                loader=""
+                scrollThreshold={1}
+            >
+                <Table striped variant="dark">
+                    <thead>
+                    <tr>
+                        {columnMission.show && <th>{t(columnMission.labelCode)}</th>}
+                        {columnRocket.show && <th>{t(columnRocket.labelCode)}</th>}
+                        {columnDate.show && <th>{t(columnDate.labelCode)}</th>}
+                        {columnLaunchSuccess.show && <th>{t(columnLaunchSuccess.labelCode)}</th>}
+                        {columnLandSuccess.show && <th>{t(columnLandSuccess.labelCode)}</th>}
+                        <th/>
                     </tr>
-                ))}
-                </tbody>
-            </Table>
+                    </thead>
+
+                    <tbody>
+                    {offsets.map(offset => (
+                        <Query key={offset} query={MissionsQuery(PAGE_SIZE, offset)}>
+                            {({ fetching, data, error }) => {
+
+                                // if (fetching) {
+                                //     return <tr><Spinner animation="border"/></tr>
+                                // }
+                                //
+                                // if (error) {
+                                //     // return <p>{`${t('message.error.general')} ${error.message}`}</p>;
+                                //     return <></>
+                                // }
+                                //
+                                // if (!data) {
+                                //     // return <p>{t('message.info.no_data')}</p>
+                                //     return <></>
+                                // }
+
+                                if (!data || !data.launchesPast) {
+                                    return <></>
+                                }
+
+                                return (
+                                    <>
+                                        {data.launchesPast.map((pastLaunch: Mission) => (
+                                            <tr key={pastLaunch.id}>
+                                                {columnMission.show && <td>{pastLaunch.mission_name}</td>}
+                                                {columnRocket.show && <td>{pastLaunch.rocket.rocket_name}</td>}
+                                                {columnDate.show && <td>{localizeTimestamp(pastLaunch.launch_date_local, i18n.language)}</td>}
+                                                {columnLaunchSuccess.show && <td><SuccessOrFailure value={pastLaunch.launch_success}/></td>}
+                                                {columnLandSuccess.show &&
+                                                    <td><SuccessOrFailure value={pastLaunch.rocket.first_stage.cores[0].land_success}/></td>}
+                                                <td>
+                                                    <Link to={`launch/${pastLaunch.id}`}>
+                                                        <Button variant="outline-info">{t('button.detail')}</Button>
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        ))
+                                        }
+                                    </>
+                                )
+                            }}
+                        </Query>
+                    ))}
+                    </tbody>
+                </Table>
+            </InfiniteScroll>
         </div>
     );
 }

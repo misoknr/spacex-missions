@@ -4,8 +4,8 @@ export const spacexClient = createClient({
     url: 'https://api.spacex.land/graphql',
 });
 
-export const MissionsQuery = (limit: number) => `{
-  launchesPast(limit: ${limit}) {
+export const MissionsQuery = (limit: number, offset: number) => `{
+  launchesPast(limit: ${limit}, offset: ${offset}) {
     id
     mission_name
     launch_date_local
